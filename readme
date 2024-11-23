@@ -1,1 +1,42 @@
-this is the cloud formaiton file from the cloud academy
+
+Deploying Infrastructure Using CloudFormation 
+
+1. Virtual Private Cloud (VPC) and Subnet
+This template begins by creating a VPC (`MyVPC`) to serve as the foundation for all resources. The VPC uses a CIDR block of `172.16.0.0/16`, which defines its IP range.
+DNS support and hostnames are enabled to facilitate communication between resources. Within the VPC, six subnets are created, split between two Availability Zones (AZs).
+These include public subnets (`PublicSubnet1A` and `PublicSubnet2A`) for resources that need internet access and private subnets for applications and data, providing isolation (`AppPrivateSubnet1A`, `AppPrivateSubnet2B`, `DataPrivateSubnet1B`, and `DataPrivateSubnet2B`).
+
+The public subnets have `MapPublicIpOnLaunch` set to true, meaning instances launched there automatically get public IPs for internet communication. The private subnets remain isolated from the internet for better security.
+
+
+
+2. Internet Gateway and Routing
+To enable internet access, the template creates an Internet Gateway (`InternetGateway`) and attaches it to the VPC using a `VPCGatewayAttachment`. A public route table (`PublicRouteTable`) is then created to define how traffic is routed. A route (`PublicRoute`) is added to send all internet-bound traffic (`0.0.0.0/0`) through the Internet Gateway. This route table is associated with public subnets to ensure resources in those subnets can communicate with the internet.
+
+
+
+3. Security Groups
+Security groups provide strict control over network traffic. The `BastionSG` security group allows SSH access on port 22 but restricts it to a specific IP address (`129.89.234.52/32`) for enhanced security. The application instances have their own security groups (`AppInstance1ASG` and `AppInstance2BSG`):
+AppInstance1ASG` permits SSH connections only from the bastion host.
+AppInstance2BSG` allows ICMP (ping) traffic from the first application instance, enabling internal network communication between these instances.
+
+These security rules ensure secure, limited access to resources while supporting internal communication.
+
+
+
+4. EC2 Instances
+The template provisions three EC2 instances. The bastion host (`BastionHost`) is deployed in the public subnet (`PublicSubnet1A`) and serves as a jump server
+ for accessing private resources securely. Two application instances (`AppInstance1A` and `AppInstance2B`) are deployed in private subnets across two AZs. 
+The bastion host acts as the only gateway to these private instances, ensuring they remain inaccessible directly from the internet. Instances are tagged appropriately (`BastionHost`, `App1`, `App2`) for easy identification.
+
+
+5. Dependencies and Logical Relationships
+Key dependencies and relationships are carefully managed in this setup. For example, the public route depends on the Internet Gateway being attached 
+to the VPC, ensuring the route is valid. Security groups are configured to allow specific communication paths, such as SSH from the bastion host to application instances and ICMP between application instances. 
+These dependencies create a robust and secure network design.
+
+
+Summary
+This template automates the creation of a highly structured AWS VPC with a mix of public and private subnets, secure routing, and EC2 instances. 
+The public subnets allow external connectivity for resources like the bastion host, while private subnets provide isolated environments for sensitive workloads like applications and data. 
+Security groups enforce strict access control, and routing ensures efficient communication across the network. This architecture is ideal for deploying multi-tier applications with enhanced security and scalability.
