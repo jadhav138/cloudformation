@@ -1,0 +1,98 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: cloudformation for vpc
+
+Resources:
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: '172.16.0.0/16'
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: MyVPC
+
+  #AZ-1
+
+# PublicSubnet1A In AZ-1
+  PublicSubnet1A:
+   Type: 'AWS::EC2::Subnet'
+   Properties:
+     vpcId: !Ref MyVPC
+     CidrBlock: '172.16.0.0/24'
+     AvailabilityZone: !Select [0, !GetAZs '']
+     MapPublicIpOnLaunch: true
+     Tags:
+       - Key: Name
+         Value: PublicSubnet1A
+
+# AppPrivateSubnet1A In AZ-1
+  AppPrivateSubnet1A:
+   Type: 'AWS::EC2::Subnet'
+   Properties:
+    VpcId: !Ref MyVPC
+    CidrBlock: '172.16.2.0/24'
+    AvailabilityZone: !Select [0, !GetAZs '']
+    Tags:
+     - Key: Name
+       Value: AppPrivateSubnet1A
+
+
+# DataPrivateSubnet1B
+  DataPrivateSubnet1B:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+     VpcId: !Ref MyVPC
+     CidrBlock: '172.16.3.0/24'
+     AvailabilityZone: !Select [0, !GetAZs '']
+     Tags:
+      - Key: Name
+        Value: DataPrivateSubnet1B
+
+
+#AZ-2
+
+  #PublicSubnet2A In AZ-2
+  PublicSubnet2A:
+   Type: 'AWS::EC2::Subnet'
+   Properties:
+     VpcId: !Ref MyVPC
+     CidrBlock: '172.16.4.0/24'
+     AvailabilityZone: !Select [1, !GetAZs '']
+     MapPublicIpOnLaunch: true
+     Tags:
+       - Key: Name
+         Value: PublicSubnet2A
+     
+ # AppPrivateSubnet2B In AZ-2 
+  AppPrivateSubnet2B:
+   Type: 'AWS::EC2::Subnet'
+   Properties:
+     VpcId: !Ref MyVPC
+     CidrBlock: '172.16.5.0/24'
+     AvailabilityZone: !Select [1, !GetAZs '']
+     Tags:
+      - Key: Name
+        Value: AppPrivateSubnet2B
+
+#DataPrivateSubnet2B In AZ-2
+  DataPrivateSubnet2B:
+   Type: 'AWS::EC2::Subnet'
+   Properties:
+     VpcId: !Ref MyVPC
+     CidrBlock: '172.16.6.0/24'
+     AvailabilityZone: !Select [1, !GetAZs '']
+     Tags:
+      - Key : Name
+        Value: DataPrivateSubnet2B
+
+
+                      
+
+        
+
+
+
+
+
+

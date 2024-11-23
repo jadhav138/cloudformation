@@ -5,5 +5,5 @@ Resources:
   MyS3Bucket:
     Type: "AWS::S3::Bucket"
     Properties:
-      BucketName: 'kojadha-bucket-11/21/2024' # Replace with a unique name
+      BucketName: 'kamashe-s3-bucket-2024' # Replace with a unique name
       
